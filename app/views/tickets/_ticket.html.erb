@@ -1,0 +1,9 @@
+<div class="card mb-2">
+  <div class="card-body">
+    <h5><%= ticket.title %></h5>
+    <p><%= ticket.description %></p>
+    <span class="badge bg-info">Priority: <%= ticket.priority %></span>
+    <span class="badge bg-secondary">Status: <%= ticket.status %></span>
+    <span class="badge bg-light">Created by: <%= ticket.user.email %></span>
+  </div>
+</div>

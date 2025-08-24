@@ -1,0 +1,32 @@
+<%= form_with model: ticket, data: { controller: "ticket-form" }, id: "ticket_form", html: { class: "form-horizontal" } do |f| %>
+  <div class="form-group row mb-3">
+    <%= f.label :title, class: "col-sm-3 col-form-label" %>
+    <div class="col-sm-9">
+      <%= f.text_field :title, class: "form-control" %>
+    </div>
+  </div>
+  <div class="form-group row mb-3">
+    <%= f.label :description, class: "col-sm-3 col-form-label" %>
+    <div class="col-sm-9">
+      <%= f.text_area :description, class: "form-control" %>
+    </div>
+  </div>
+  <div class="form-group row mb-3">
+    <%= f.label :priority, class: "col-sm-3 col-form-label" %>
+    <div class="col-sm-9">
+      <%= f.select :priority, %w[low medium high], {}, class: "form-select" %>
+    </div>
+  </div>
+  <div class="form-group row mb-3">
+    <%= f.label :status, class: "col-sm-3 col-form-label" %>
+    <div class="col-sm-9">
+      <%= f.select :status, %w[open in_progress closed], {}, class: "form-select" %>
+    </div>
+  </div>
+  <div class="form-group row mb-3">
+    <div class="offset-sm-3 col-sm-9">
+      <%= f.submit "Create Ticket", class: "btn btn-success w-100" %>
+    </div>
+  </div>
+  <div data-ticket-form-target="error" class="text-danger"></div>
+<% end %>

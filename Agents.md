@@ -61,3 +61,8 @@ Before proposing or committing any code changes, evaluate your execution against
 3.  **Hotwire Compliance:** Did I implement the dynamic interaction using a Turbo Frame, Turbo Stream response, or standard Stimulus controller instead of raw legacy JS or manual AJAX?
 4.  **Bootstrap Styling:** Does the markup rely on native Bootstrap components and layout grids, ensuring visual consistency?
 5.  **Minitest Enforcement:** Did I write accompanying Unit, Integration, or System tests using standard Minitest configurations? Do all project tests pass cleanly without errors?
+
+## Style
+
+1. The style of the project should following the layout of Mantis (https://mantisdashboard.com/codeignitor/default/public/dashboard-default)
+2. Any dashboards should use the foloowing dashboard as a refernce (https://mantisdashboard.com/codeignitor/default/public/helpdesk-dashboard)

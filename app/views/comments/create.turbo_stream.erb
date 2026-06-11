@@ -1,0 +1,16 @@
+<%= turbo_stream.append "comments_list", partial: "comments/comment", locals: { comment: @comment } %>
+
+<%= turbo_stream.remove "no-comments-msg" %>
+
+<%= turbo_stream.update "comment_form" do %>
+  <%= form_with model: [@ticket, Comment.new], class: "mt-3", data: { turbo_stream: true } do |f| %>
+    <div class="mb-2">
+      <%= f.text_area :body, class: "form-control", rows: 3, placeholder: "Write a comment...", required: true %>
+    </div>
+    <%= f.submit "Add Comment", class: "btn btn-primary btn-sm" %>
+  <% end %>
+<% end %>
+
+<%= turbo_stream.update "comments_count" do %>
+  <%= @ticket.comments.count %>
+<% end %>

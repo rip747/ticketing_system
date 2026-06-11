@@ -1,0 +1,47 @@
+<% content_for :page_title, "Register" %>
+
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <i class="bi bi-person-plus-fill"></i>
+      <h3>Create Account</h3>
+      <p>Register a new account</p>
+    </div>
+
+    <%= form_with model: @user, url: register_path, class: "needs-validation" do |f| %>
+      <% if @user.errors.any? %>
+        <div class="alert alert-danger" style="border-radius:10px;border:none;">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          <%= @user.errors.full_messages.to_sentence %>
+        </div>
+      <% end %>
+
+      <div class="mb-3">
+        <%= f.label :name, "Full Name", class: "form-label fw-medium" %>
+        <%= f.text_field :name, class: "form-control", placeholder: "Enter your name", required: true %>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :email, "Email Address", class: "form-label fw-medium" %>
+        <%= f.email_field :email, class: "form-control", placeholder: "Enter your email", required: true %>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :password, "Password", class: "form-label fw-medium" %>
+        <%= f.password_field :password, class: "form-control", placeholder: "Create a password", required: true %>
+      </div>
+
+      <div class="mb-4">
+        <%= f.label :password_confirmation, "Confirm Password", class: "form-label fw-medium" %>
+        <%= f.password_field :password_confirmation, class: "form-control", placeholder: "Confirm your password", required: true %>
+      </div>
+
+      <%= f.submit "Create Account", class: "btn btn-primary w-100 py-2 fw-medium" %>
+    <% end %>
+
+    <div class="text-center mt-4">
+      <span style="color:#718096;font-size:0.9rem;">Already have an account?</span>
+      <%= link_to "Sign In", login_path, class: "fw-medium ms-1", style: "color: var(--primary-color);" %>
+    </div>
+  </div>
+</div>

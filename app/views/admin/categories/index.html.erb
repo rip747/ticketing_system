@@ -1,0 +1,48 @@
+<% content_for :page_title, "Categories" %>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="fw-bold mb-0" style="color:#2d3748;"><i class="bi bi-tags-fill me-2"></i>Categories</h5>
+  <%= link_to new_admin_category_path, class: "btn btn-primary btn-sm" do %>
+    <i class="bi bi-plus-lg me-1"></i> New Category
+  <% end %>
+</div>
+
+<div class="card-custom">
+  <div class="card-body p-0">
+    <% if @categories.any? %>
+      <div class="table-responsive">
+        <table class="table table-custom">
+          <thead>
+            <tr><th>Name</th><th>Description</th><th>Department</th><th>Tickets</th><th></th></tr>
+          </thead>
+          <tbody>
+            <% @categories.each do |cat| %>
+              <tr>
+                <td data-label="Name" class="fw-medium"><%= cat.name %></td>
+                <td data-label="Description" style="font-size:0.85rem;color:#718096;"><%= truncate(cat.description, length: 50) %></td>
+                <td data-label="Department"><span class="badge bg-light text-dark"><%= cat.department.name %></span></td>
+                <td data-label="Tickets"><span class="badge bg-light text-dark"><%= cat.tickets.count %></span></td>
+                <td data-label="">
+                  <div class="dropdown">
+                    <button class="btn btn-sm btn-light" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="border-radius:10px;border:none;">
+                      <li><%= link_to edit_admin_category_path(cat), class: "dropdown-item" do %><i class="bi bi-pencil me-2"></i> Edit<% end %></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><%= button_to admin_category_path(cat), method: :delete, class: "dropdown-item text-danger", form: { data: { turbo_confirm: "Delete '#{cat.name}'?" } } do %><i class="bi bi-trash me-2"></i> Delete<% end %></li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="text-center py-5" style="color:#718096;">
+        <i class="bi bi-tags" style="font-size:2rem;display:block;margin-bottom:12px;"></i>
+        <p>No categories yet.</p>
+        <%= link_to "Create Category", new_admin_category_path, class: "btn btn-primary btn-sm" %>
+      </div>
+    <% end %>
+  </div>
+</div>

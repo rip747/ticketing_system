@@ -1,0 +1,173 @@
+<% content_for :page_title, "Dashboard" %>
+
+<!-- Stats Cards Row -->
+<div class="row g-3 mb-4">
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card d-flex align-items-center gap-3">
+      <div class="stat-icon" style="background:#ebf4ff;color:#3182ce;">
+        <i class="bi bi-ticket-perforated"></i>
+      </div>
+      <div>
+        <div class="stat-value"><%= @total_tickets %></div>
+        <div class="stat-label">Total Tickets</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card d-flex align-items-center gap-3">
+      <div class="stat-icon" style="background:#e6fffa;color:#38a169;">
+        <i class="bi bi-check2-circle"></i>
+      </div>
+      <div>
+        <div class="stat-value"><%= @open_tickets %></div>
+        <div class="stat-label">Open Tickets</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card d-flex align-items-center gap-3">
+      <div class="stat-icon" style="background:#fefcbf;color:#d69e2e;">
+        <i class="bi bi-clock"></i>
+      </div>
+      <div>
+        <div class="stat-value"><%= @pending_tickets %></div>
+        <div class="stat-label">Pending Tickets</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card d-flex align-items-center gap-3">
+      <div class="stat-icon" style="background:#f0f0f0;color:#718096;">
+        <i class="bi bi-check-all"></i>
+      </div>
+      <div>
+        <div class="stat-value"><%= @resolved_tickets %></div>
+        <div class="stat-label">Resolved Tickets</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <!-- Status Distribution -->
+  <div class="col-xl-4 col-md-6">
+    <div class="card-custom">
+      <div class="card-header"><i class="bi bi-pie-chart me-2"></i>Tickets by Status</div>
+      <div class="card-body">
+        <% total = @tickets_by_status.values.sum.to_f %>
+        <% @tickets_by_status.each do |status, count| %>
+          <% pct = total > 0 ? (count / total * 100).round(1) : 0 %>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between mb-1">
+              <span style="font-size:0.85rem;color:#4a5568;"><span class="badge-status badge-<%= status %>"><%= status.titleize %></span></span>
+              <strong style="font-size:0.9rem;"><%= count %></strong>
+            </div>
+            <div class="progress" style="height:6px;border-radius:3px;background:#edf2f7;">
+              <div class="progress-bar" style="width:<%= pct %>%"
+                role="progressbar" aria-valuenow="<%= count %>" aria-valuemin="0" aria-valuemax="<%= total.to_i %>"></div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Priority Distribution -->
+  <div class="col-xl-4 col-md-6">
+    <div class="card-custom">
+      <div class="card-header"><i class="bi bi-flag me-2"></i>Tickets by Priority</div>
+      <div class="card-body">
+        <% @tickets_by_priority.each do |priority, count| %>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="priority-<%= priority %>"><i class="bi bi-flag-fill me-1"></i> <%= priority.titleize %></span>
+            <span class="badge bg-light text-dark rounded-pill"><%= count %></span>
+          </div>
+        <% end %>
+        <% if @tickets_by_priority.empty? %>
+          <p class="text-muted mb-0">No tickets yet.</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tickets by Department -->
+  <div class="col-xl-4 col-md-6">
+    <div class="card-custom">
+      <div class="card-header"><i class="bi bi-building me-2"></i>Tickets by Department</div>
+      <div class="card-body">
+        <% @tickets_by_department.each do |dept, count| %>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span><%= dept %></span>
+            <span class="badge bg-primary rounded-pill"><%= count %></span>
+          </div>
+        <% end %>
+        <% if @tickets_by_department.empty? %>
+          <p class="text-muted mb-0">No tickets yet.</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Tickets -->
+<div class="row g-3">
+  <div class="col-12">
+    <div class="card-custom">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-list-task me-2"></i>
+          <%= current_user.admin? ? "All Recent Tickets" : (current_user.agent_or_admin? ? "My Assigned Tickets" : "My Recent Tickets") %>
+        </span>
+        <%= link_to tickets_path, class: "btn btn-sm btn-outline-primary" do %>
+          View All <i class="bi bi-arrow-right ms-1"></i>
+        <% end %>
+      </div>
+      <div class="card-body p-0">
+        <% if @recent_tickets.any? %>
+          <div class="table-responsive">
+            <table class="table table-custom">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Subject</th>
+                  <% unless current_user.customer? %><th>Requester</th><% end %>
+                  <th>Status</th>
+                  <th>Priority</th>
+                  <th>Department</th>
+                  <% unless current_user.customer? %><th>Assigned To</th><% end %>
+                  <th>Updated</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @recent_tickets.each do |ticket| %>
+                  <tr>
+                    <td data-label="ID">#<%= ticket.id %></td>
+                    <td data-label="Subject"><%= link_to ticket.subject, ticket, class: "fw-medium", style: "color:var(--primary-color);text-decoration:none;" %></td>
+                    <% unless current_user.customer? %>
+                      <td data-label="Requester" style="font-size:0.85rem;"><%= ticket.user.name %></td>
+                    <% end %>
+                    <td data-label="Status"><span class="badge-status badge-<%= ticket.status %>"><%= ticket.status.titleize %></span></td>
+                    <td data-label="Priority" class="priority-<%= ticket.priority %>"><%= ticket.priority.titleize %></td>
+                    <td data-label="Department" style="font-size:0.85rem;"><%= ticket.department.name %></td>
+                    <% unless current_user.customer? %>
+                      <td data-label="Assigned To" style="font-size:0.85rem;"><%= ticket.assigned_user&.name || "—" %></td>
+                    <% end %>
+                    <td data-label="Updated" style="font-size:0.85rem;color:#718096;"><%= time_ago_in_words(ticket.updated_at) %> ago</td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <div class="text-center py-5" style="color:#718096;">
+            <i class="bi bi-inbox" style="font-size:2rem;display:block;margin-bottom:12px;"></i>
+            <p class="mb-0">No tickets to show yet.</p>
+            <%= link_to "Create a Ticket", new_ticket_path, class: "btn btn-primary btn-sm mt-2" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

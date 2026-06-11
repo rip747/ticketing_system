@@ -70,3 +70,17 @@ Before proposing or committing any code changes, evaluate your execution against
 ## Code Layout
 
 1. Almost all of the code for the project will live in the /app directory
+
+## Do
+
+1. When validating user input, make sure that the validations happen at the model and controller layer first, then add validations at the UI level. You should always assume that someone will try to hack or by pass the UI through the dev tools in a browser.
+2. Always assume a security first approach. Users should never be able to see each others information unless they are part of the same organization.
+3. This application is a multi-tenant application.
+4. Always make sure that tests pass at the lower levels (models/controllers/jobs/mailers/helpers/views/) before performing system tests (user interface)
+5. All CSS should be in a separate file as much as possible. I understand that some CSS might have to be inline, however I don't want CSS in the header of the application.
+6. Any textareas MUST be rich text and allow for images and attachments using ActionText
+7. Use hHotWire when submitting forms so that the page doesn't refresh.
+8. Use ActionCable as much as possible so that if 2 people are using the applicaiton at the same time, updates will happen in real time.
+9. Use Partials as much as possible so you don't repeat yourself. You can especially do that with create and edit forms.
+10. Mobile first. Make sure that functionality will work on a mobile device. 
+11. Try to always use stimulus when you can and DO NOT use inline javascript unless absolutely nescessary.

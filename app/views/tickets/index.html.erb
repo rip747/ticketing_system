@@ -1,0 +1,106 @@
+<% content_for :page_title, "Tickets" %>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="fw-bold mb-0" style="color:#2d3748;">All Tickets</h5>
+  <%= link_to new_ticket_path, class: "btn btn-primary" do %>
+    <i class="bi bi-plus-lg me-1"></i> New Ticket
+  <% end %>
+</div>
+
+<!-- Filter Bar -->
+<div class="filter-bar">
+  <%= form_tag tickets_path, method: :get, class: "row g-2 align-items-end", data: { turbo_frame: "tickets-list", controller: "filters" } do %>
+    <div class="col-md-3">
+      <%= label_tag :q, "Search", class: "form-label small mb-1" %>
+      <%= text_field_tag :q, params[:q], class: "form-control form-control-sm", placeholder: "Search tickets..." %>
+    </div>
+    <div class="col-md-2">
+      <%= label_tag :status, "Status", class: "form-label small mb-1" %>
+      <%= select_tag :status, options_for_select([["All Statuses", ""], ["Open", "open"], ["Pending", "pending"], ["Resolved", "resolved"], ["Closed", "closed"]], params[:status]), class: "form-select form-select-sm" %>
+    </div>
+    <div class="col-md-2">
+      <%= label_tag :priority, "Priority", class: "form-label small mb-1" %>
+      <%= select_tag :priority, options_for_select([["All Priorities", ""], ["Low", "low"], ["Medium", "medium"], ["High", "high"], ["Urgent", "urgent"]], params[:priority]), class: "form-select form-select-sm" %>
+    </div>
+    <div class="col-md-2">
+      <%= label_tag :department_id, "Department", class: "form-label small mb-1" %>
+      <%= select_tag :department_id, options_from_collection_for_select(Department.all, :id, :name, params[:department_id]), include_blank: "All Departments", class: "form-select form-select-sm" %>
+    </div>
+    <div class="col-md-1">
+      <%= submit_tag "Filter", class: "btn btn-primary btn-sm w-100" %>
+    </div>
+    <div class="col-md-1">
+      <%= button_tag "Clear", type: :reset, class: "btn btn-outline-secondary btn-sm w-100" %>
+    </div>
+  <% end %>
+</div>
+
+<!-- Tickets Table -->
+<div class="card-custom">
+  <div class="card-body p-0">
+    <% if @tickets.any? %>
+      <div class="table-responsive">
+        <table class="table table-custom">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Subject</th>
+              <th>Requester</th>
+              <th>Status</th>
+              <th>Priority</th>
+              <th>Department</th>
+              <th>Assigned To</th>
+              <th>Updated</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @tickets.each do |ticket| %>
+              <tr>
+                <td data-label="ID" style="font-weight:600;color:#2d3748;">#<%= ticket.id %></td>
+                <td data-label="Subject">
+                  <%= link_to ticket.subject, ticket, class: "fw-medium", style: "color:var(--primary-color);text-decoration:none;" %>
+                  <% if ticket.comments.any? %>
+                    <span class="ms-1" style="color:#718096;font-size:0.75rem;"><i class="bi bi-chat-dots"></i> <%= ticket.comments.count %></span>
+                  <% end %>
+                </td>
+                <td data-label="Requester" style="font-size:0.85rem;"><%= ticket.user.name %></td>
+                <td data-label="Status"><span class="badge-status badge-<%= ticket.status %>"><%= ticket.status.titleize %></span></td>
+                <td data-label="Priority" class="priority-<%= ticket.priority %>"><%= ticket.priority.titleize %></td>
+                <td data-label="Department" style="font-size:0.85rem;"><%= ticket.department.name %></td>
+                <td data-label="Assigned To" style="font-size:0.85rem;">
+                  <% if ticket.assigned_user %>
+                    <span class="badge bg-light text-dark"><%= ticket.assigned_user.name %></span>
+                  <% else %>
+                    <span class="text-muted">—</span>
+                  <% end %>
+                </td>
+                <td data-label="Updated" style="font-size:0.8rem;color:#718096;"><%= time_ago_in_words(ticket.updated_at) %> ago</td>
+                <td data-label="">
+                  <div class="dropdown">
+                    <button class="btn btn-sm btn-light" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="border-radius:10px;border:none;">
+                      <li><%= link_to ticket, class: "dropdown-item" do %><i class="bi bi-eye me-2"></i> View<% end %></li>
+                      <% if current_user.agent_or_admin? %>
+                        <li><%= link_to edit_ticket_path(ticket), class: "dropdown-item" do %><i class="bi bi-pencil me-2"></i> Edit<% end %></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><%= link_to ticket, class: "dropdown-item text-danger", data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } do %><i class="bi bi-trash me-2"></i> Delete<% end %></li>
+                      <% end %>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="text-center py-5" style="color:#718096;">
+        <i class="bi bi-inbox" style="font-size:3rem;display:block;margin-bottom:16px;"></i>
+        <h5 style="color:#2d3748;">No Tickets Found</h5>
+        <p><%= params[:q].present? ? "No results match your search." : "There are no tickets yet." %></p>
+        <%= link_to "Create Your First Ticket", new_ticket_path, class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+</div>

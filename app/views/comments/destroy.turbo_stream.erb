@@ -1,0 +1,5 @@
+<%= turbo_stream.remove @comment %>
+
+<%= turbo_stream.update "comments_count" do %>
+  <%= @ticket.comments.count %>
+<% end %>

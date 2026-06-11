@@ -1,0 +1,30 @@
+<% content_for :page_title, "Login" %>
+
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <i class="bi bi-ticket-perforated-fill"></i>
+      <h3>HelpDesk</h3>
+      <p>Sign in to your account</p>
+    </div>
+
+    <%= form_tag login_path, class: "needs-validation" do %>
+      <div class="mb-3">
+        <%= label_tag :email, "Email Address", class: "form-label fw-medium" %>
+        <%= email_field_tag :email, nil, class: "form-control", placeholder: "Enter your email", required: true, autofocus: true %>
+      </div>
+
+      <div class="mb-4">
+        <%= label_tag :password, "Password", class: "form-label fw-medium" %>
+        <%= password_field_tag :password, nil, class: "form-control", placeholder: "Enter your password", required: true %>
+      </div>
+
+      <%= submit_tag "Sign In", class: "btn btn-primary w-100 py-2 fw-medium" %>
+    <% end %>
+
+    <div class="text-center mt-4">
+      <span style="color:#718096;font-size:0.9rem;">Don't have an account?</span>
+      <%= link_to "Register", register_path, class: "fw-medium ms-1", style: "color: var(--primary-color);" %>
+    </div>
+  </div>
+</div>

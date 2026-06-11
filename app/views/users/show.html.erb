@@ -1,0 +1,75 @@
+<% content_for :page_title, "My Profile" %>
+
+<div class="row">
+  <div class="col-lg-4">
+    <div class="card-custom text-center p-4">
+      <div class="user-avatar mx-auto mb-3" style="width:80px;height:80px;font-size:2rem;border-radius:50%;background:var(--primary-color);color:#fff;display:flex;align-items:center;justify-content:center;">
+        <%= @user.name.to_s[0]&.upcase || "?" %>
+      </div>
+      <h5 class="fw-bold"><%= @user.name %></h5>
+      <span class="badge bg-primary rounded-pill text-capitalize"><%= @user.role %></span>
+      <hr class="my-3">
+      <div class="text-start">
+        <div class="mb-2">
+          <small class="text-muted d-block">Email</small>
+          <strong><%= @user.email %></strong>
+        </div>
+        <% if @user.department %>
+          <div class="mb-2">
+            <small class="text-muted d-block">Department</small>
+            <strong><%= @user.department.name %></strong>
+          </div>
+        <% end %>
+        <div>
+          <small class="text-muted d-block">Member Since</small>
+          <strong><%= @user.created_at.strftime("%B %d, %Y") %></strong>
+        </div>
+      </div>
+      <%= link_to edit_profile_path, class: "btn btn-outline-primary w-100 mt-3" do %>
+        <i class="bi bi-pencil me-1"></i> Edit Profile
+      <% end %>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="card-custom">
+      <div class="card-header">
+        <i class="bi bi-ticket-perforated me-2"></i>My Recent Tickets
+      </div>
+      <div class="card-body p-0">
+        <% if @user.tickets.any? %>
+          <div class="table-responsive">
+            <table class="table table-custom">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Subject</th>
+                  <th>Status</th>
+                  <th>Priority</th>
+                  <th>Created</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @user.tickets.recent.limit(10).each do |ticket| %>
+                  <tr>
+                    <td>#<%= ticket.id %></td>
+                    <td><%= link_to ticket.subject, ticket, class: "fw-medium", style: "color:var(--primary-color);text-decoration:none;" %></td>
+                    <td><span class="badge-status badge-<%= ticket.status %>"><%= ticket.status.titleize %></span></td>
+                    <td class="priority-<%= ticket.priority %>"><i class="bi bi-flag-fill me-1"></i><%= ticket.priority.titleize %></td>
+                    <td style="font-size:0.85rem;color:#718096;"><%= time_ago_in_words(ticket.created_at) %> ago</td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <div class="text-center py-5" style="color:#718096;">
+            <i class="bi bi-inbox" style="font-size:2rem;"></i>
+            <p class="mt-2">No tickets yet.</p>
+            <%= link_to "Create Ticket", new_ticket_path, class: "btn btn-primary btn-sm" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

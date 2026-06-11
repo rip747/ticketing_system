@@ -1,0 +1,134 @@
+<% content_for :page_title, "Ticket ##{@ticket.id}" %>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="fw-bold mb-0" style="color:#2d3748;">
+    Ticket #<%= @ticket.id %>
+    <span class="badge-status badge-<%= @ticket.status %> ms-2"><%= @ticket.status.titleize %></span>
+  </h5>
+  <div class="d-flex ticket-header-actions gap-2">
+    <%= link_to tickets_path, class: "btn btn-outline-secondary btn-sm" do %>
+      <i class="bi bi-arrow-left me-1"></i> Back
+    <% end %>
+    <% if current_user.agent_or_admin? %>
+      <%= link_to edit_ticket_path(@ticket), class: "btn btn-outline-primary btn-sm" do %>
+        <i class="bi bi-pencil me-1"></i> Edit
+      <% end %>
+      <% if @ticket.open? || @ticket.pending? %>
+        <%= button_to close_ticket_path(@ticket), method: :patch, class: "btn btn-success btn-sm", form: { style: "display:inline;" } do %>
+          <i class="bi bi-check-lg me-1"></i> Close
+        <% end %>
+      <% end %>
+      <% if @ticket.closed? %>
+        <%= button_to reopen_ticket_path(@ticket), method: :patch, class: "btn btn-warning btn-sm", form: { style: "display:inline;" } do %>
+          <i class="bi bi-arrow-counterclockwise me-1"></i> Reopen
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<div class="row g-3">
+  <!-- Main Ticket Content -->
+  <div class="col-lg-8">
+    <div class="card-custom mb-3">
+      <div class="card-header">
+        <i class="bi bi-info-circle me-2"></i><%= @ticket.subject %>
+      </div>
+      <div class="card-body">
+        <% if @ticket.description.present? %>
+          <div style="color:#4a5568;line-height:1.7;"><%= @ticket.description %></div>
+        <% else %>
+          <p style="color:#4a5568;">No description provided.</p>
+        <% end %>
+
+        <% if @ticket.closed_at %>
+          <div class="alert alert-secondary mt-3" style="border-radius:10px;border:none;font-size:0.85rem;">
+            <i class="bi bi-check-all me-1"></i> Closed on <%= @ticket.closed_at.strftime("%B %d, %Y at %I:%M %p") %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Comments -->
+    <div class="card-custom">
+      <div class="card-header">
+        <i class="bi bi-chat-dots me-2"></i>Comments (<span id="comments_count"><%= @comments.count %></span>)
+      </div>
+      <div class="card-body">
+        <div id="comments_list">
+          <% if @comments.any? %>
+            <% @comments.each do |comment| %>
+              <%= render "comments/comment", comment: comment %>
+            <% end %>
+          <% else %>
+            <p class="text-muted mb-3" id="no-comments-msg">No comments yet.</p>
+          <% end %>
+        </div>
+
+        <!-- Add Comment -->
+        <div id="comment_form">
+          <%= form_with model: [@ticket, @comment], class: "mt-3", data: { turbo_stream: true } do |f| %>
+            <div class="mb-2">
+              <%= f.text_area :body, class: "form-control", rows: 3, placeholder: "Write a comment...", required: true %>
+            </div>
+            <%= f.submit "Add Comment", class: "btn btn-primary btn-sm" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="col-lg-4">
+    <!-- Details -->
+    <div class="card-custom mb-3">
+      <div class="card-header"><i class="bi bi-info-square me-2"></i>Details</div>
+      <div class="card-body">
+        <dl class="ticket-meta row mb-0">
+          <dt class="col-5">Requester</dt>
+          <dd class="col-7"><%= @ticket.user.name %></dd>
+
+          <dt class="col-5">Department</dt>
+          <dd class="col-7"><%= @ticket.department.name %></dd>
+
+          <dt class="col-5">Category</dt>
+          <dd class="col-7"><%= @ticket.category.name %></dd>
+
+          <dt class="col-5">Priority</dt>
+          <dd class="col-7 priority-<%= @ticket.priority %>"><%= @ticket.priority.titleize %></dd>
+
+          <dt class="col-5">Created</dt>
+          <dd class="col-7" style="font-size:0.85rem;"><%= @ticket.created_at.strftime("%b %d, %Y") %></dd>
+
+          <dt class="col-5">Updated</dt>
+          <dd class="col-7" style="font-size:0.85rem;"><%= time_ago_in_words(@ticket.updated_at) %> ago</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Assignment -->
+    <% if current_user.agent_or_admin? %>
+      <div class="card-custom mb-3">
+        <div class="card-header"><i class="bi bi-person-check me-2"></i>Assignment</div>
+        <div class="card-body">
+          <% if @ticket.assigned_user %>
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <div style="width:36px;height:36px;border-radius:50%;background:var(--primary-color);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:0.85rem;">
+                <%= @ticket.assigned_user.name[0].upcase %>
+              </div>
+              <div>
+                <div style="font-weight:600;font-size:0.9rem;"><%= @ticket.assigned_user.name %></div>
+                <div style="font-size:0.75rem;color:#718096;">Assigned Agent</div>
+              </div>
+            </div>
+          <% end %>
+
+          <%= form_tag assign_ticket_path(@ticket), method: :post, class: "d-flex gap-2" do %>
+            <%= select_tag :assigned_user_id, options_from_collection_for_select(User.agents, :id, :name, @ticket.assigned_user_id), include_blank: "Select agent...", class: "form-select form-select-sm" %>
+            <%= submit_tag "Assign", class: "btn btn-primary btn-sm" %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

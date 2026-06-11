@@ -66,3 +66,7 @@ Before proposing or committing any code changes, evaluate your execution against
 
 1. The style of the project should following the layout of Mantis (https://mantisdashboard.com/codeignitor/default/public/dashboard-default)
 2. Any dashboards should use the foloowing dashboard as a refernce (https://mantisdashboard.com/codeignitor/default/public/helpdesk-dashboard)
+
+## Code Layout
+
+1. Almost all of the code for the project will live in the /app directory

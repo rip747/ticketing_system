@@ -1,15 +1,19 @@
 it_support:
   name: IT Support
   description: Handles all technical issues
+  organization: default
 
 hr:
   name: Human Resources
   description: Manages employee relations
+  organization: default
 
 finance:
   name: Finance
   description: Handles billing and payments
+  organization: default
 
 operations:
   name: Operations
   description: Manages operational issues
+  organization: default

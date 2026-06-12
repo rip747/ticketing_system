@@ -23,7 +23,7 @@
       </div>
       <div class="col-md-6">
         <strong style="color:#718096;font-size:0.85rem;">Role</strong>
-        <p class="mb-0 mt-1"><span class="badge <%= @user.admin? ? 'bg-danger' : (@user.agent_or_admin? ? 'bg-info' : 'bg-secondary') %>"><%= @user.role.titleize %></span></p>
+        <p class="mb-0 mt-1"><span class="badge <%= @user.org_admin? ? 'bg-danger' : (@user.agent_or_admin? ? 'bg-info' : 'bg-secondary') %>"><%= @user.role.titleize %></span></p>
       </div>
     </div>
     <div class="mb-3">

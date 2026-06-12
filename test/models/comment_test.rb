@@ -5,15 +5,22 @@ class CommentTest < ActiveSupport::TestCase
     comment = Comment.new(
       body: "This is a comment",
       user: users(:agent_sarah),
-      ticket: tickets(:laptop_issue)
+      ticket: tickets(:laptop_issue),
+      organization: organizations(:default)
     )
     assert comment.valid?
   end
 
   test "should require body" do
-    comment = Comment.new(user: users(:agent_sarah), ticket: tickets(:laptop_issue))
+    comment = Comment.new(user: users(:agent_sarah), ticket: tickets(:laptop_issue), organization: organizations(:default))
     assert_not comment.valid?
     assert_includes comment.errors[:body], "can't be blank"
+  end
+
+  test "should belong to organization" do
+    comment = comments(:comment_one)
+    assert_respond_to comment, :organization
+    assert_equal organizations(:default), comment.organization
   end
 
   test "should belong to user" do

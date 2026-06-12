@@ -1,5 +1,6 @@
 class DashboardController < ApplicationController
   before_action :require_login
+  before_action :redirect_sys_admin
 
   def index
     @tickets_scope = tickets_for_current_user
@@ -13,7 +14,7 @@ class DashboardController < ApplicationController
 
     @tickets_by_priority = @tickets_scope.group(:priority).count
     @tickets_by_status = @tickets_scope.group(:status).count
-    @tickets_by_department = Department.where(id: @tickets_scope.select(:department_id))
+    @tickets_by_department = current_organization.departments.where(id: @tickets_scope.select(:department_id))
                                         .joins(:tickets)
                                         .merge(@tickets_scope)
                                         .group(:name)
@@ -24,11 +25,17 @@ class DashboardController < ApplicationController
 
   private
 
+  def redirect_sys_admin
+    if current_user&.sys_admin?
+      redirect_to system_root_path
+    end
+  end
+
   def tickets_for_current_user
-    if current_user.admin?
-      Ticket.all
+    if current_user.org_admin?
+      current_organization.tickets
     elsif current_user.agent_or_admin?
-      Ticket.where(assigned_user_id: current_user.id)
+      current_organization.tickets.where(assigned_user_id: current_user.id)
     else
       current_user.tickets
     end

@@ -99,9 +99,10 @@ class TicketFlowTest < ActionDispatch::IntegrationTest
   end
 
   test "authentication flow" do
-    # Register
+    # Register with organization
     post register_path, params: {
       user: {
+        organization_name: "Flow Company",
         name: "Flow User",
         email: "flow@example.com",
         password: "password123",

@@ -7,24 +7,37 @@ class UserTest < ActiveSupport::TestCase
       email: "test@example.com",
       password: "password123",
       password_confirmation: "password123",
-      role: "customer"
+      role: "customer",
+      organization: organizations(:default)
     )
     assert user.valid?
   end
 
   test "should require name" do
-    user = User.new(email: "test@example.com", password: "password123", role: "customer")
+    user = User.new(email: "test@example.com", password: "password123", role: "customer", organization: organizations(:default))
     assert_not user.valid?
     assert_includes user.errors[:name], "can't be blank"
   end
 
   test "should require email" do
-    user = User.new(name: "Test", password: "password123", role: "customer")
+    user = User.new(name: "Test", password: "password123", role: "customer", organization: organizations(:default))
     assert_not user.valid?
     assert_includes user.errors[:email], "can't be blank"
   end
 
-  test "should require unique email" do
+  test "should require unique email scoped to organization" do
+    user = User.new(
+      name: "Test",
+      email: users(:admin).email,
+      password: "password123",
+      role: "customer",
+      organization: organizations(:default)
+    )
+    assert_not user.valid?
+    assert_includes user.errors[:email], "has already been taken"
+  end
+
+  test "should require globally unique email" do
     user = User.new(
       name: "Test",
       email: users(:admin).email,
@@ -40,7 +53,8 @@ class UserTest < ActiveSupport::TestCase
       name: "Test",
       email: "invalid-email",
       password: "password123",
-      role: "customer"
+      role: "customer",
+      organization: organizations(:default)
     )
     assert_not user.valid?
     assert_includes user.errors[:email], "is invalid"
@@ -51,7 +65,8 @@ class UserTest < ActiveSupport::TestCase
       name: "Test",
       email: "test@example.com",
       password: "password123",
-      role: "superadmin"
+      role: "superadmin",
+      organization: organizations(:default)
     )
     assert_not user.valid?
     assert_includes user.errors[:role], "is not included in the list"
@@ -61,7 +76,8 @@ class UserTest < ActiveSupport::TestCase
     user = User.new(
       name: "Test",
       email: "test-default@example.com",
-      password: "password123"
+      password: "password123",
+      organization: organizations(:default)
     )
     assert_equal "customer", user.role
   end
@@ -76,6 +92,17 @@ class UserTest < ActiveSupport::TestCase
     assert_not user.authenticate("wrongpassword")
   end
 
+  test "sys_admin can exist without organization" do
+    user = User.create!(
+      name: "Sys Admin",
+      email: "sysadmin-test@example.com",
+      password: "password123",
+      role: "sys_admin"
+    )
+    assert user.sys_admin?
+    assert_nil user.organization
+  end
+
   test "should belong to department (optional)" do
     user = users(:admin)
     assert_respond_to user, :department
@@ -87,7 +114,8 @@ class UserTest < ActiveSupport::TestCase
       name: "No Dept",
       email: "nodept@example.com",
       password: "password123",
-      role: "customer"
+      role: "customer",
+      organization: organizations(:default)
     )
     assert_nil user.department
   end
@@ -117,11 +145,11 @@ class UserTest < ActiveSupport::TestCase
     assert_not_includes agents, users(:admin)
   end
 
-  test "scope admins returns only admins" do
-    admins = User.admins
-    assert admins.all? { |u| u.role == "admin" }
-    assert_includes admins, users(:admin)
-    assert_not_includes admins, users(:agent_sarah)
+  test "scope org_admins returns only org_admins" do
+    org_admins = User.org_admins
+    assert org_admins.all? { |u| u.role == "org_admin" }
+    assert_includes org_admins, users(:admin)
+    assert_not_includes org_admins, users(:agent_sarah)
   end
 
   test "scope customers returns only customers" do
@@ -135,7 +163,7 @@ class UserTest < ActiveSupport::TestCase
     assert users(:agent_sarah).agent_or_admin?
   end
 
-  test "agent_or_admin? returns true for admins" do
+  test "agent_or_admin? returns true for org_admins" do
     assert users(:admin).agent_or_admin?
   end
 
@@ -143,12 +171,32 @@ class UserTest < ActiveSupport::TestCase
     assert_not users(:customer_john).agent_or_admin?
   end
 
-  test "admin? returns true for admins" do
-    assert users(:admin).admin?
+  test "org_admin? returns true for org_admins" do
+    assert users(:admin).org_admin?
   end
 
-  test "admin? returns false for agents" do
-    assert_not users(:agent_sarah).admin?
+  test "org_admin? returns false for agents" do
+    assert_not users(:agent_sarah).org_admin?
+  end
+
+  test "sys_admin? returns true for sys_admins" do
+    assert users(:sys_admin).sys_admin?
+  end
+
+  test "sys_admin? returns false for regular users" do
+    assert_not users(:admin).sys_admin?
+  end
+
+  test "can_manage_organization? returns true for org_admins" do
+    assert users(:admin).can_manage_organization?
+  end
+
+  test "can_manage_organization? returns true for sys_admins" do
+    assert users(:sys_admin).can_manage_organization?
+  end
+
+  test "can_manage_organization? returns false for agents" do
+    assert_not users(:agent_sarah).can_manage_organization?
   end
 
   test "customer? returns true for customers" do

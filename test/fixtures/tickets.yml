@@ -6,6 +6,7 @@ vpn_issue:
   assigned_user: agent_sarah
   category: network
   department: it_support
+  organization: default
 
 laptop_issue:
   subject: Laptop screen flickering
@@ -15,6 +16,7 @@ laptop_issue:
   assigned_user: 
   category: hardware
   department: it_support
+  organization: default
 
 payroll_issue:
   subject: Payroll discrepancy for June
@@ -24,6 +26,7 @@ payroll_issue:
   assigned_user: agent_mike
   category: payroll
   department: hr
+  organization: default
 
 email_issue:
   subject: Email not sending attachments
@@ -33,6 +36,7 @@ email_issue:
   assigned_user: 
   category: software
   department: it_support
+  organization: default
 
 license_request:
   subject: Request for new software license
@@ -43,6 +47,7 @@ license_request:
   category: invoice
   department: finance
   closed_at: <%= Time.current %>
+  organization: default
 
 printer_issue:
   subject: Office printer not working
@@ -52,6 +57,7 @@ printer_issue:
   assigned_user: 
   category: facility
   department: operations
+  organization: default
 
 leave_request:
   subject: Annual leave request for July
@@ -61,6 +67,7 @@ leave_request:
   assigned_user: agent_mike
   category: leave
   department: hr
+  organization: default
 
 refund_request:
   subject: Refund for duplicate invoice
@@ -70,3 +77,4 @@ refund_request:
   assigned_user: 
   category: refund
   department: finance
+  organization: default

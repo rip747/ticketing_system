@@ -1,17 +1,22 @@
+# Create Organization
+org = Organization.find_or_create_by!(slug: "acme-corp") do |o|
+  o.name = "Acme Corporation"
+end
+
 # Create Departments
-dept_it = Department.find_or_create_by!(name: "IT Support") do |d|
+dept_it = Department.find_or_create_by!(name: "IT Support", organization: org) do |d|
   d.description = "Handles all technical issues including hardware, software, and network problems."
 end
 
-dept_hr = Department.find_or_create_by!(name: "Human Resources") do |d|
+dept_hr = Department.find_or_create_by!(name: "Human Resources", organization: org) do |d|
   d.description = "Manages employee relations, payroll, benefits, and recruitment inquiries."
 end
 
-dept_finance = Department.find_or_create_by!(name: "Finance") do |d|
+dept_finance = Department.find_or_create_by!(name: "Finance", organization: org) do |d|
   d.description = "Handles billing, invoicing, payments, and financial inquiries."
 end
 
-dept_ops = Department.find_or_create_by!(name: "Operations") do |d|
+dept_ops = Department.find_or_create_by!(name: "Operations", organization: org) do |d|
   d.description = "Manages day-to-day operational issues and facility management."
 end
 
@@ -32,16 +37,25 @@ categories = [
 ]
 
 categories.each do |cat|
-  Category.find_or_create_by!(name: cat[:name], department: cat[:department])
+  Category.find_or_create_by!(name: cat[:name], department: cat[:department], organization: org)
 end
 
-# Create Admin User
-admin = User.find_or_create_by!(email: "admin@helpdesk.com") do |u|
-  u.name = "System Admin"
+# Create System Administrator (no organization - super admin across all orgs)
+sys_admin = User.find_or_create_by!(email: "sysadmin@helpdesk.com") do |u|
+  u.name = "System Administrator"
   u.password = "password123"
   u.password_confirmation = "password123"
-  u.role = "admin"
+  u.role = "sys_admin"
+end
+
+# Create Org Admin User
+admin = User.find_or_create_by!(email: "admin@helpdesk.com") do |u|
+  u.name = "Org Admin"
+  u.password = "password123"
+  u.password_confirmation = "password123"
+  u.role = "org_admin"
   u.department = dept_it
+  u.organization = org
 end
 
 # Create Agents
@@ -51,6 +65,7 @@ agent1 = User.find_or_create_by!(email: "sarah@helpdesk.com") do |u|
   u.password_confirmation = "password123"
   u.role = "agent"
   u.department = dept_it
+  u.organization = org
 end
 
 agent2 = User.find_or_create_by!(email: "mike@helpdesk.com") do |u|
@@ -59,6 +74,7 @@ agent2 = User.find_or_create_by!(email: "mike@helpdesk.com") do |u|
   u.password_confirmation = "password123"
   u.role = "agent"
   u.department = dept_hr
+  u.organization = org
 end
 
 agent3 = User.find_or_create_by!(email: "emma@helpdesk.com") do |u|
@@ -67,6 +83,7 @@ agent3 = User.find_or_create_by!(email: "emma@helpdesk.com") do |u|
   u.password_confirmation = "password123"
   u.role = "agent"
   u.department = dept_finance
+  u.organization = org
 end
 
 # Create Customers
@@ -85,6 +102,7 @@ customer_records = customers.map do |c|
     u.password_confirmation = "password123"
     u.role = "customer"
     u.department = c[:department]
+    u.organization = org
   end
 end
 
@@ -133,8 +151,9 @@ puts "  #{Ticket.count} tickets"
 puts "  #{Comment.count} comments"
 puts ""
 puts "Login credentials:"
-puts "  Admin:  admin@helpdesk.com / password123"
-puts "  Agent:  sarah@helpdesk.com / password123"
-puts "  Agent:  mike@helpdesk.com / password123"
-puts "  Agent:  emma@helpdesk.com / password123"
-puts "  Customer: john@example.com / password123"
+puts "  System Admin:  sysadmin@helpdesk.com / password123"
+puts "  Org Admin:     admin@helpdesk.com / password123"
+puts "  Agent:         sarah@helpdesk.com / password123"
+puts "  Agent:         mike@helpdesk.com / password123"
+puts "  Agent:         emma@helpdesk.com / password123"
+puts "  Customer:      john@example.com / password123"

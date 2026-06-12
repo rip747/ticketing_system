@@ -3,7 +3,7 @@ module Admin
     before_action :set_user, only: [ :show, :edit, :update, :destroy ]
 
     def index
-      @users = User.all.includes(:department).order(:name)
+      @users = current_organization.users.includes(:department).order(:name)
       @users = @users.where(role: params[:role]) if params[:role].present?
     end
 
@@ -11,11 +11,11 @@ module Admin
     end
 
     def new
-      @user = User.new
+      @user = current_organization.users.new
     end
 
     def create
-      @user = User.new(create_params)
+      @user = current_organization.users.build(create_params)
       if @user.save
         flash[:notice] = "User created successfully."
         redirect_to admin_users_path
@@ -54,7 +54,7 @@ module Admin
     private
 
     def set_user
-      @user = User.find(params[:id])
+      @user = current_organization.users.find(params[:id])
     end
 
     def user_params

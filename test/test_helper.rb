@@ -29,7 +29,16 @@ module ActiveSupport
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     fixtures :all
 
-    # Add more helper methods to be used by all tests here...
+    # Set the current organization for all model tests
+    setup do
+      if defined?(organizations) && organizations(:default)
+        Current.organization = organizations(:default)
+      end
+    end
+
+    teardown do
+      Current.organization = nil
+    end
   end
 end
 
@@ -41,6 +50,8 @@ module ActionDispatch
     # Helper to log in as a specific user fixture
     def login_as(user)
       post login_path, params: { email: user.email, password: "password123" }
+      # Set the current organization context
+      Current.organization = user.organization if user.organization
     end
 
     # Helper to log in as admin
@@ -58,6 +69,12 @@ module ActionDispatch
       login_as(users(:customer_john))
     end
 
+    # Helper to log in as a system administrator
+    def login_as_sys_admin
+      post login_path, params: { email: users(:sys_admin).email, password: "password123" }
+      Current.organization = nil
+    end
+
     # Helper to check if a user is logged in
     def logged_in?
       session[:user_id].present?
@@ -66,6 +83,7 @@ module ActionDispatch
     teardown do
       Capybara.reset_sessions!
       Capybara.use_default_driver
+      Current.organization = nil
     end
   end
 end

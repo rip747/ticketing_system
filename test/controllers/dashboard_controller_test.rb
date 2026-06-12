@@ -23,4 +23,10 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
   end
+
+  test "should redirect sys_admin to system dashboard" do
+    login_as_sys_admin
+    get root_path
+    assert_redirected_to system_root_path
+  end
 end

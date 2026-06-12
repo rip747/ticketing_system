@@ -1,0 +1,51 @@
+<% content_for :page_title, "Organizations" %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="fw-bold mb-0" style="color:#1a1a2e;">Organizations</h4>
+  <%= link_to new_system_organization_path, class: "btn btn-danger btn-sm" do %>
+    <i class="bi bi-plus-lg"></i> New Organization
+  <% end %>
+</div>
+
+<div class="card border-0 shadow-sm" style="border-radius:12px;">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th class="ps-4">Name</th>
+            <th>Slug</th>
+            <th>Users</th>
+            <th>Tickets</th>
+            <th>Created</th>
+            <th class="pe-4 text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @organizations.each do |org| %>
+            <tr>
+              <td class="ps-4 fw-medium"><%= link_to org.name, system_organization_path(org), style: "color:#4361ee;text-decoration:none;" %></td>
+              <td style="color:#718096;"><code><%= org.slug %></code></td>
+              <td><%= org.users.count %></td>
+              <td><%= org.tickets.count %></td>
+              <td style="color:#718096;"><%= time_ago_in_words(org.created_at) %> ago</td>
+              <td class="pe-4 text-end">
+                <%= link_to edit_system_organization_path(org), class: "btn btn-sm btn-outline-secondary me-1", title: "Edit" do %>
+                  <i class="bi bi-pencil"></i>
+                <% end %>
+                <%= link_to system_organization_path(org), method: :delete, data: { confirm: "Delete this organization and all associated data?" }, class: "btn btn-sm btn-outline-danger", title: "Delete" do %>
+                  <i class="bi bi-trash"></i>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+          <% if @organizations.empty? %>
+            <tr>
+              <td colspan="6" class="text-center py-4" style="color:#718096;">No organizations found.</td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

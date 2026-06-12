@@ -1,9 +1,17 @@
+sys_admin:
+  name: System Administrator
+  email: sysadmin@helpdesk.com
+  password_digest: <%= BCrypt::Password.create('password123') %>
+  role: sys_admin
+  organization:
+
 admin:
-  name: System Admin
+  name: Org Admin
   email: admin@helpdesk.com
   password_digest: <%= BCrypt::Password.create('password123') %>
-  role: admin
+  role: org_admin
   department: it_support
+  organization: default
 
 agent_sarah:
   name: Sarah Johnson
@@ -11,6 +19,7 @@ agent_sarah:
   password_digest: <%= BCrypt::Password.create('password123') %>
   role: agent
   department: it_support
+  organization: default
 
 agent_mike:
   name: Mike Chen
@@ -18,6 +27,7 @@ agent_mike:
   password_digest: <%= BCrypt::Password.create('password123') %>
   role: agent
   department: hr
+  organization: default
 
 agent_emma:
   name: Emma Wilson
@@ -25,6 +35,7 @@ agent_emma:
   password_digest: <%= BCrypt::Password.create('password123') %>
   role: agent
   department: finance
+  organization: default
 
 customer_john:
   name: John Doe
@@ -32,6 +43,7 @@ customer_john:
   password_digest: <%= BCrypt::Password.create('password123') %>
   role: customer
   department: it_support
+  organization: default
 
 customer_jane:
   name: Jane Smith
@@ -39,6 +51,7 @@ customer_jane:
   password_digest: <%= BCrypt::Password.create('password123') %>
   role: customer
   department: hr
+  organization: default
 
 customer_bob:
   name: Bob Johnson
@@ -46,6 +59,7 @@ customer_bob:
   password_digest: <%= BCrypt::Password.create('password123') %>
   role: customer
   department: operations
+  organization: default
 
 customer_alice:
   name: Alice Brown
@@ -53,3 +67,4 @@ customer_alice:
   password_digest: <%= BCrypt::Password.create('password123') %>
   role: customer
   department: finance
+  organization: default

@@ -106,7 +106,8 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
       name: "Temp",
       email: "temp@example.com",
       password: "password123",
-      role: "customer"
+      role: "customer",
+      organization: organizations(:default)
     )
     assert_difference("User.count", -1) do
       delete admin_user_path(user)

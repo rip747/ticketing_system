@@ -118,7 +118,7 @@
     <div class="card-custom">
       <div class="card-header d-flex justify-content-between align-items-center">
         <span><i class="bi bi-list-task me-2"></i>
-          <%= current_user.admin? ? "All Recent Tickets" : (current_user.agent_or_admin? ? "My Assigned Tickets" : "My Recent Tickets") %>
+          <%= current_user.org_admin? ? "All Recent Tickets" : (current_user.agent_or_admin? ? "My Assigned Tickets" : "My Recent Tickets") %>
         </span>
         <%= link_to tickets_path, class: "btn btn-sm btn-outline-primary" do %>
           View All <i class="bi bi-arrow-right ms-1"></i>

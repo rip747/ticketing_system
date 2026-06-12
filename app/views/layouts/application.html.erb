@@ -43,13 +43,15 @@
           <%= link_to tickets_path, class: "nav-item#{controller_name == 'tickets' ? ' active' : ''}" do %>
             <i class="bi bi-ticket-perforated"></i>
             <span class="nav-text" title="Tickets">Tickets</span>
-            <% open_count = current_user.admin? ? Ticket.open.count : (current_user.agent_or_admin? ? Ticket.where(assigned_user_id: current_user.id).open.count : current_user.tickets.open.count) %>
-            <% if open_count > 0 %>
-              <span class="badge bg-danger rounded-pill"><%= open_count %></span>
+            <% if current_organization %>
+              <% open_count = current_user.org_admin? ? current_organization.tickets.open.count : (current_user.agent_or_admin? ? current_organization.tickets.where(assigned_user_id: current_user.id).open.count : current_user.tickets.open.count) %>
+              <% if open_count > 0 %>
+                <span class="badge bg-danger rounded-pill"><%= open_count %></span>
+              <% end %>
             <% end %>
           <% end %>
 
-          <% if current_user.agent_or_admin? %>
+          <% if current_user.agent_or_admin? && current_organization %>
             <div class="nav-section mt-3">Management</div>
             <%= link_to admin_departments_path, class: "nav-item" do %>
               <i class="bi bi-building"></i>
@@ -61,7 +63,7 @@
             <% end %>
           <% end %>
 
-          <% if current_user.admin? %>
+          <% if current_user.org_admin? %>
             <div class="nav-section mt-3">Administration</div>
             <%= link_to admin_users_path, class: "nav-item" do %>
               <i class="bi bi-people-fill"></i>
@@ -70,6 +72,14 @@
             <%= link_to admin_root_path, class: "nav-item" do %>
               <i class="bi bi-gear-fill"></i>
               <span class="nav-text">Settings</span>
+            <% end %>
+          <% end %>
+
+          <% if current_user.sys_admin? %>
+            <div class="nav-section mt-3">System</div>
+            <%= link_to system_root_path, class: "nav-item#{params[:controller]&.start_with?('system') ? ' active' : ''}" do %>
+              <i class="bi bi-shield-shaded"></i>
+              <span class="nav-text">System Panel</span>
             <% end %>
           <% end %>
         </nav>
@@ -136,3 +146,14 @@
     </div>
   </body>
 </html>
+
+<% if current_user&.sys_admin? %>
+  <div class="sys-admin-banner">
+    <i class="bi bi-shield-fill-exclamation me-2"></i>
+    Logged in as <strong>System Administrator</strong>
+    <span class="mx-2">|</span>
+    <%= link_to "System Panel", system_root_path, style: "color:#fff;text-decoration:underline;" %>
+    <span class="mx-2">|</span>
+    <%= link_to "Logout", logout_path, style: "color:#fff;text-decoration:underline;", data: { turbo_method: :delete } %>
+  </div>
+<% end %>

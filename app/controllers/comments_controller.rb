@@ -2,9 +2,10 @@ class CommentsController < ApplicationController
   before_action :require_login
 
   def create
-    @ticket = Ticket.find(params[:ticket_id])
+    @ticket = current_organization.tickets.find(params[:ticket_id])
     @comment = @ticket.comments.build(comment_params)
     @comment.user = current_user
+    @comment.organization = current_organization
 
     if @comment.save
       respond_to do |format|
@@ -20,9 +21,9 @@ class CommentsController < ApplicationController
   end
 
   def destroy
-    @comment = Comment.find(params[:id])
+    @comment = current_organization.comments.find(params[:id])
     @ticket = @comment.ticket
-    if current_user.admin? || @comment.user == current_user
+    if current_user.org_admin? || @comment.user == current_user
       @comment.destroy
       respond_to do |format|
         format.turbo_stream

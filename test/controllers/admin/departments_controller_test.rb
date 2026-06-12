@@ -68,7 +68,7 @@ class Admin::DepartmentsControllerTest < ActionDispatch::IntegrationTest
 
   test "should destroy department with no dependencies" do
     login_as_admin
-    department = Department.create!(name: "Temp Dept")
+    department = Department.create!(name: "Temp Dept", organization: organizations(:default))
     assert_difference("Department.count", -1) do
       delete admin_department_path(department)
     end

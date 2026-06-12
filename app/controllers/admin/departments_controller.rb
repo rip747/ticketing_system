@@ -3,18 +3,18 @@ module Admin
     before_action :set_department, only: [ :show, :edit, :update, :destroy ]
 
     def index
-      @departments = Department.all.order(:name)
+      @departments = current_organization.departments.order(:name)
     end
 
     def show
     end
 
     def new
-      @department = Department.new
+      @department = current_organization.departments.new
     end
 
     def create
-      @department = Department.new(department_params)
+      @department = current_organization.departments.build(department_params)
       if @department.save
         flash[:notice] = "Department created successfully."
         redirect_to admin_departments_path
@@ -47,7 +47,7 @@ module Admin
     private
 
     def set_department
-      @department = Department.find(params[:id])
+      @department = current_organization.departments.find(params[:id])
     end
 
     def department_params

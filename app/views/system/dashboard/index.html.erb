@@ -1,0 +1,97 @@
+<% content_for :page_title, "System Dashboard" %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="fw-bold mb-0" style="color:#1a1a2e;">System Administration</h4>
+  <div>
+    <%= link_to "Manage Organizations", system_organizations_path, class: "btn btn-outline-danger btn-sm" %>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="row g-3 mb-4">
+  <div class="col-md-3 col-6">
+    <div class="card border-0 shadow-sm" style="border-radius:12px;">
+      <div class="card-body text-center py-4">
+        <div class="fs-2 fw-bold" style="color:#1a1a2e;"><%= @total_organizations %></div>
+        <div style="color:#718096;font-size:0.85rem;">Organizations</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="card border-0 shadow-sm" style="border-radius:12px;">
+      <div class="card-body text-center py-4">
+        <div class="fs-2 fw-bold" style="color:#4361ee;"><%= @total_users %></div>
+        <div style="color:#718096;font-size:0.85rem;">Total Users</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="card border-0 shadow-sm" style="border-radius:12px;">
+      <div class="card-body text-center py-4">
+        <div class="fs-2 fw-bold" style="color:#f72585;"><%= @total_tickets %></div>
+        <div style="color:#718096;font-size:0.85rem;">Total Tickets</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="card border-0 shadow-sm" style="border-radius:12px;">
+      <div class="card-body text-center py-4">
+        <div class="fs-2 fw-bold" style="color:#06d6a0;"><%= @total_sys_admins %></div>
+        <div style="color:#718096;font-size:0.85rem;">System Admins</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <!-- Tickets by Status -->
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm" style="border-radius:12px;">
+      <div class="card-header bg-transparent border-0 pt-3 pb-0">
+        <h6 class="fw-bold mb-0" style="color:#1a1a2e;">Tickets by Status</h6>
+      </div>
+      <div class="card-body">
+        <table class="table table-borderless mb-0">
+          <tbody>
+            <% @tickets_by_status.each do |status, count| %>
+              <tr>
+                <td style="text-transform:capitalize;"><%= status %></td>
+                <td class="text-end fw-bold"><%= count %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Organizations -->
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm" style="border-radius:12px;">
+      <div class="card-header bg-transparent border-0 pt-3 pb-0 d-flex justify-content-between align-items-center">
+        <h6 class="fw-bold mb-0" style="color:#1a1a2e;">Recent Organizations</h6>
+        <%= link_to "View All", system_organizations_path, style: "font-size:0.8rem;color:#4361ee;" %>
+      </div>
+      <div class="card-body">
+        <table class="table table-borderless mb-0">
+          <thead>
+            <tr style="font-size:0.8rem;color:#718096;">
+              <th>Name</th>
+              <th>Slug</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @recent_organizations.each do |org| %>
+              <tr>
+                <td><%= link_to org.name, system_organization_path(org), style: "color:#4361ee;text-decoration:none;font-weight:500;" %></td>
+                <td style="color:#718096;"><%= org.slug %></td>
+                <td style="color:#718096;"><%= time_ago_in_words(org.created_at) %> ago</td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

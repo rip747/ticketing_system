@@ -7,15 +7,38 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(user_params)
-    @user.role = "customer"
-    if @user.save
-      session[:user_id] = @user.id
-      flash[:notice] = "Account created successfully! Welcome, #{@user.name}."
-      redirect_to root_path
-    else
+    org_name = params[:user][:organization_name]
+    @organization = Organization.new(name: org_name)
+
+    if org_name.blank?
+      @organization.errors.add(:name, "can't be blank")
+      @user = @organization.users.build(user_params)
+      @user.role = "org_admin"
       render :new, status: :unprocessable_entity
+      return
     end
+
+    ActiveRecord::Base.transaction do
+      @organization.save!
+      @user = @organization.users.build(user_params)
+      @user.role = "org_admin"
+      @user.save!
+    end
+
+    session[:user_id] = @user.id
+    flash[:notice] = "Organization created successfully! Welcome, #{@user.name}."
+    redirect_to root_path
+
+  rescue ActiveRecord::RecordInvalid
+    # Collect errors from both models
+    @user ||= @organization.users.build(user_params)
+    @user.role = "org_admin"
+    @user.validate
+    # Merge organization errors into user for display
+    @organization.errors.full_messages.each do |msg|
+      @user.errors.add(:base, msg) unless @user.errors.full_messages.include?(msg)
+    end
+    render :new, status: :unprocessable_entity
   end
 
   def show

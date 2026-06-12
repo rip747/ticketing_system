@@ -5,12 +5,19 @@ class ApplicationController < ActionController::Base
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
 
-  helper_method :current_user, :logged_in?, :require_login
+  helper_method :current_user, :current_organization, :logged_in?
+
+  around_action :scope_to_organization
 
   private
 
   def current_user
     @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
+  end
+
+  def current_organization
+    return nil if current_user&.sys_admin?
+    @current_organization ||= current_user&.organization
   end
 
   def logged_in?
@@ -24,8 +31,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def require_admin
-    unless current_user&.admin?
+  def require_org_admin
+    unless current_user&.org_admin?
       flash[:alert] = "You are not authorized to perform this action."
       redirect_to root_path
     end
@@ -35,6 +42,14 @@ class ApplicationController < ActionController::Base
     unless current_user&.agent_or_admin?
       flash[:alert] = "You are not authorized to perform this action."
       redirect_to root_path
+    end
+  end
+
+  def scope_to_organization
+    if current_organization
+      Current.set(organization: current_organization) { yield }
+    else
+      yield
     end
   end
 end

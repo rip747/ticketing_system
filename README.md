@@ -1,20 +1,79 @@
 # HelpDesk Ticketing System
 
-A multi-tenant HelpDesk ticketing application built with Ruby on Rails 8, featuring Hotwire (Turbo + Stimulus) for dynamic interactions, Bootstrap 5 for the UI, and a Mantis-inspired dashboard design.
+A **multi-tenant** HelpDesk ticketing application built with Ruby on Rails 8, featuring Hotwire (Turbo + Stimulus) for dynamic interactions, Bootstrap 5 for the UI, and a Mantis-inspired dashboard design.
 
 ## Features
 
-- **Role-based access** — Admins, agents, and customers with appropriate permissions
+- **Multi-tenant architecture** — Organizations are fully isolated; users never see data from other orgs
+- **Role-based access** — System Admins, Org Admins, agents, and customers with appropriate permissions
+- **Two admin areas** — Separate Organization Admin and System Admin panels with distinct login URLs
 - **Ticket management** — Create, assign, update, close, and reopen tickets
 - **Rich text descriptions** — Powered by ActionText with image and attachment support
 - **Real-time updates** — Turbo Streams and ActionCable for live UI updates
-- **Department & category hierarchy** — Tickets organized by department and category
+- **Department & category hierarchy** — Tickets organized by department and category (per-org)
 - **Full-text search** — Search tickets by subject and description
 - **Filtering** — Filter tickets by status, priority, and department
 - **Commenting** — Threaded comments on tickets with Turbo Streams
-- **Admin panel** — Manage departments, categories, and users
+- **Organization Admin panel** — Manage departments, categories, and users within your org
+- **System Admin panel** — Manage all organizations, users, and system settings
 - **Dashboard** — At-a-glance stats with status/priority/department breakdowns
-- **Multi-tenant** — Users only see their own tickets (customers) or assigned tickets (agents)
+
+## Multi-Tenant Architecture
+
+This application uses a **shared-database, shared-schema** multi-tenant model.
+
+### Tenant Isolation
+
+| Layer | Mechanism |
+|---|---|
+| **Models** | Every tenant-scoped model has `organization_id` with FK constraint |
+| **Controllers** | All queries chain off `current_organization` — never from user-supplied params |
+| **Sessions** | `current_organization` is derived from `current_user.organization`, never from request params |
+| **Current** | Thread-safe `Current.organization` via `ActiveSupport::CurrentAttributes` |
+
+### Design Principles
+
+- **Organization ID is never accepted from parameters** — always inferred from `Current.organization`
+- **System Administrators** have no org affiliation — `organization_id` is `NULL` for `sys_admin` users
+- **Emails are globally unique** — to support sys_admin accounts existing outside any org
+
+## Role System
+
+| Role | Scope | Capabilities |
+|---|---|---|
+| **`sys_admin`** | Global | Manages all organizations, views all data across the system |
+| **`org_admin`** | Per-organization | Manages their org's departments, categories, users, and tickets |
+| **`agent`** | Per-organization | Views and edits tickets assigned to them, manages tickets in their org |
+| **`customer`** | Per-organization | Creates and views only their own tickets |
+
+### Role Delegation
+
+Org Admins can create users and assign them as agents or other org admins through the Organization Admin panel, allowing flexible delegation within each organization.
+
+## Two Admin Areas
+
+### 1. Organization Admin (`/admin/*`)
+
+For org-level administrators managing their own organization.
+
+| Route | Purpose |
+|---|---|
+| `/admin` | Org admin dashboard — user/ticket counts, recent activity |
+| `/admin/departments` | Manage departments within the org |
+| `/admin/categories` | Manage ticket categories within the org |
+| `/admin/users` | Manage users within the org (create agents, org admins, customers) |
+
+### 2. System Admin (`/system/*`)
+
+For system administrators managing the entire platform across all organizations.
+
+| Route | Purpose |
+|---|---|
+| `/system/login` | **Separate login** for system administrators (distinct from `/login`) |
+| `/system` | System dashboard — cross-org stats, ticket status breakdown |
+| `/system/organizations` | CRUD management of all organizations |
+
+The System Admin login is at a **separate URL** (`/system/login`) so it can be locked down by IP address or other means if necessary. A **fixed red banner** appears at the bottom of every page when logged in as a System Administrator.
 
 ## Tech Stack
 
@@ -54,17 +113,27 @@ bin/rails db:setup
 bin/dev
 ```
 
-Visit [http://localhost:3000](http://localhost:3000)
+Visit [http://localhost:3000](http://localhost:3000) for the main application.
+Visit [http://localhost:3000/system/login](http://localhost:3000/system/login) for the System Admin panel.
 
 ### Seed Accounts
 
-| Role | Email | Password |
-|---|---|---|
-| Admin | admin@helpdesk.com | password123 |
-| Agent | sarah@helpdesk.com | password123 |
-| Agent | mike@helpdesk.com | password123 |
-| Agent | emma@helpdesk.com | password123 |
-| Customer | john@example.com | password123 |
+| Role | Email | Password | Login URL |
+|---|---|---|---|
+| System Admin | sysadmin@helpdesk.com | password123 | `/system/login` |
+| Org Admin | admin@helpdesk.com | password123 | `/login` |
+| Agent | sarah@helpdesk.com | password123 | `/login` |
+| Agent | mike@helpdesk.com | password123 | `/login` |
+| Agent | emma@helpdesk.com | password123 | `/login` |
+| Customer | john@example.com | password123 | `/login` |
+
+## Registration
+
+New users sign up at `/register` by providing:
+1. **Organization Name** — Creates a new tenant organization
+2. **Their name, email, and password**
+
+The first user of an organization is automatically assigned the **Org Admin** role and can then invite additional users.
 
 ## Testing
 
@@ -88,15 +157,21 @@ Coverage reports are generated to `coverage/index.html`.
 
 ### Test structure
 
-| Directory | Tests |
-|---|---|
-| `test/models/` | 73 unit tests — validations, scopes, associations, state methods |
-| `test/controllers/` | 93 controller tests — CRUD, auth gates, role-based access |
-| `test/integration/` | 9 integration tests — full user flows |
-| `test/system/` | 4 system tests — end-to-end via Capybara |
-| `test/helpers/` | 1 helper test |
+| Directory | Tests | Description |
+|---|---|---|
+| `test/models/` | 85 unit tests | Validations, scopes, associations, role methods, multi-tenant isolation |
+| `test/controllers/` | 98 controller tests | CRUD, auth gates, role-based access, tenant scoping |
+| `test/integration/` | 7 integration tests | Full user flows including registration with org creation |
+| `test/system/` | 4 system tests | End-to-end via Capybara |
 
-**Total: 180 tests, 461 assertions, 100% line coverage**
+**Total: 192 tests, 489 assertions**
+
+### Multi-Tenant Testing
+
+- All fixtures include `organization: default` to ensure proper tenant scoping
+- `test_helper.rb` sets `Current.organization` in model test `setup` and integration `login_as` helpers
+- Sys admin fixture (`users(:sys_admin)`) has no organization affiliation
+- Cross-tenant access attempts are tested to ensure proper isolation
 
 ## Architecture
 

@@ -1,4 +1,5 @@
 class Ticket < ApplicationRecord
+  belongs_to :organization
   belongs_to :user
   belongs_to :assigned_user, class_name: "User", optional: true
   belongs_to :category

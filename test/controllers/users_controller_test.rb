@@ -6,8 +6,29 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should register new user" do
-    assert_difference("User.count") do
+  test "should register new user with organization" do
+    assert_difference([ "User.count", "Organization.count" ]) do
+      post register_path, params: {
+        user: {
+          organization_name: "My Company",
+          name: "New User",
+          email: "newuser@example.com",
+          password: "password123",
+          password_confirmation: "password123"
+        }
+      }
+    end
+    assert_redirected_to root_path
+    assert_equal "Organization created successfully! Welcome, New User.", flash[:notice]
+
+    user = User.find_by(email: "newuser@example.com")
+    assert_not_nil user
+    assert_equal "org_admin", user.role
+    assert_equal "my-company", user.organization.slug
+  end
+
+  test "should not register without organization name" do
+    assert_no_difference([ "User.count", "Organization.count" ]) do
       post register_path, params: {
         user: {
           name: "New User",
@@ -17,14 +38,14 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
         }
       }
     end
-    assert_redirected_to root_path
-    assert_equal "Account created successfully! Welcome, New User.", flash[:notice]
+    assert_response :unprocessable_entity
   end
 
   test "should not register with invalid data" do
-    assert_no_difference("User.count") do
+    assert_no_difference([ "User.count", "Organization.count" ]) do
       post register_path, params: {
         user: {
+          organization_name: "Company",
           name: "",
           email: "invalid",
           password: "short",
@@ -35,11 +56,12 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
-  test "should not register with duplicate email" do
-    assert_no_difference("User.count") do
+  test "should reject duplicate email globally" do
+    assert_no_difference([ "User.count", "Organization.count" ]) do
       post register_path, params: {
         user: {
-          name: "Dup",
+          organization_name: "Another Company",
+          name: "Duplicate Email",
           email: users(:customer_john).email,
           password: "password123",
           password_confirmation: "password123"
@@ -49,16 +71,18 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
-  test "should create user as customer role by default" do
+  test "should create user as org_admin role (first user of organization)" do
     post register_path, params: {
       user: {
-        name: "Customer User",
-        email: "customer-user@example.com",
+        organization_name: "Brand New Co",
+        name: "Founder User",
+        email: "founder@example.com",
         password: "password123",
         password_confirmation: "password123"
       }
     }
-    assert_equal "customer", User.find_by(email: "customer-user@example.com").role
+    user = User.find_by(email: "founder@example.com")
+    assert_equal "org_admin", user.role
   end
 
   test "should redirect to login for profile when not logged in" do

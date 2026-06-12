@@ -70,7 +70,7 @@ class Admin::CategoriesControllerTest < ActionDispatch::IntegrationTest
 
   test "should destroy category with no tickets" do
     login_as_admin
-    category = Category.create!(name: "Temp Cat", department: departments(:it_support))
+    category = Category.create!(name: "Temp Cat", department: departments(:it_support), organization: organizations(:default))
     assert_difference("Category.count", -1) do
       delete admin_category_path(category)
     end

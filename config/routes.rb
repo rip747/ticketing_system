@@ -33,11 +33,22 @@ Rails.application.routes.draw do
   # Dynamic category loading
   get "departments/:id/categories", to: "departments#categories", as: :department_categories
 
-  # Admin namespace
+  # Organization Admin namespace (for org_admins managing their org)
   namespace :admin do
     root "dashboard#index"
     resources :departments
     resources :categories
     resources :users
+  end
+
+  # System Admin namespace (for sys_admins managing the whole platform)
+  namespace :system do
+    # Separate login for system administrators
+    get "login" => "sessions#new", as: :login
+    post "login" => "sessions#create"
+    delete "logout" => "sessions#destroy", as: :logout
+
+    root "dashboard#index"
+    resources :organizations
   end
 end

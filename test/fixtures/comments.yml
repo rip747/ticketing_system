@@ -2,18 +2,22 @@ comment_one:
   body: I'll look into the VPN issue right away.
   user: agent_sarah
   ticket: vpn_issue
+  organization: default
 
 comment_two:
   body: Thank you for the quick response!
   user: customer_john
   ticket: vpn_issue
+  organization: default
 
 comment_three:
   body: Please provide your employee ID for payroll verification.
   user: agent_mike
   ticket: payroll_issue
+  organization: default
 
 comment_four:
   body: We have processed the license request.
   user: agent_emma
   ticket: license_request
+  organization: default

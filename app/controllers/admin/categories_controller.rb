@@ -3,18 +3,18 @@ module Admin
     before_action :set_category, only: [ :show, :edit, :update, :destroy ]
 
     def index
-      @categories = Category.all.includes(:department).order(:name)
+      @categories = current_organization.categories.includes(:department).order(:name)
     end
 
     def show
     end
 
     def new
-      @category = Category.new
+      @category = current_organization.categories.new
     end
 
     def create
-      @category = Category.new(category_params)
+      @category = current_organization.categories.build(category_params)
       if @category.save
         flash[:notice] = "Category created successfully."
         redirect_to admin_categories_path
@@ -47,7 +47,7 @@ module Admin
     private
 
     def set_category
-      @category = Category.find(params[:id])
+      @category = current_organization.categories.find(params[:id])
     end
 
     def category_params

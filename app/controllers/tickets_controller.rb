@@ -1,10 +1,10 @@
 class TicketsController < ApplicationController
   before_action :require_login
-  before_action :set_ticket, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_ticket, only: [ :show, :edit, :update, :destroy, :assign, :close, :reopen ]
   before_action :require_agent_or_admin, only: [ :edit, :update, :destroy, :assign ]
 
   def index
-    @tickets = Ticket.recent
+    @tickets = current_organization.tickets.recent
 
     if current_user.customer?
       @tickets = @tickets.where(user_id: current_user.id)
@@ -27,11 +27,12 @@ class TicketsController < ApplicationController
   end
 
   def new
-    @ticket = Ticket.new
+    @ticket = current_organization.tickets.new
   end
 
   def create
-    @ticket = current_user.tickets.build(ticket_params)
+    @ticket = current_organization.tickets.build(ticket_params)
+    @ticket.user = current_user
     @ticket.status = "open"
 
     if @ticket.save
@@ -61,8 +62,7 @@ class TicketsController < ApplicationController
   end
 
   def assign
-    @ticket = Ticket.find(params[:id])
-    if @ticket.assign_to!(User.find(params[:assigned_user_id]))
+    if @ticket.assign_to!(current_organization.users.find(params[:assigned_user_id]))
       flash[:notice] = "Ticket assigned successfully."
     else
       flash[:alert] = "Could not assign ticket."
@@ -71,14 +71,12 @@ class TicketsController < ApplicationController
   end
 
   def close
-    @ticket = Ticket.find(params[:id])
     @ticket.close!
     flash[:notice] = "Ticket closed."
     redirect_to @ticket
   end
 
   def reopen
-    @ticket = Ticket.find(params[:id])
     @ticket.update(status: "open", closed_at: nil)
     flash[:notice] = "Ticket reopened."
     redirect_to @ticket
@@ -87,7 +85,7 @@ class TicketsController < ApplicationController
   private
 
   def set_ticket
-    @ticket = Ticket.find(params[:id])
+    @ticket = current_organization.tickets.find(params[:id])
   end
 
   def ticket_params

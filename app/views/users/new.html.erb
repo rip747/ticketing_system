@@ -3,9 +3,9 @@
 <div class="auth-page">
   <div class="auth-card">
     <div class="auth-logo">
-      <i class="bi bi-person-plus-fill"></i>
-      <h3>Create Account</h3>
-      <p>Register a new account</p>
+      <i class="bi bi-building"></i>
+      <h3>Create Your Organization</h3>
+      <p>Set up your help desk account</p>
     </div>
 
     <%= form_with model: @user, url: register_path, class: "needs-validation" do |f| %>
@@ -17,7 +17,15 @@
       <% end %>
 
       <div class="mb-3">
-        <%= f.label :name, "Full Name", class: "form-label fw-medium" %>
+        <%= f.label :organization_name, "Organization Name", class: "form-label fw-medium" %>
+        <%= f.text_field :organization_name, class: "form-control", placeholder: "Your company name", required: true, autofocus: true %>
+        <div class="form-text" style="font-size:0.8rem;color:#718096;">This will be your help desk tenant name.</div>
+      </div>
+
+      <hr class="my-4">
+
+      <div class="mb-3">
+        <%= f.label :name, "Your Full Name", class: "form-label fw-medium" %>
         <%= f.text_field :name, class: "form-control", placeholder: "Enter your name", required: true %>
       </div>
 
@@ -36,7 +44,7 @@
         <%= f.password_field :password_confirmation, class: "form-control", placeholder: "Confirm your password", required: true %>
       </div>
 
-      <%= f.submit "Create Account", class: "btn btn-primary w-100 py-2 fw-medium" %>
+      <%= f.submit "Create Organization & Account", class: "btn btn-primary w-100 py-2 fw-medium" %>
     <% end %>
 
     <div class="text-center mt-4">

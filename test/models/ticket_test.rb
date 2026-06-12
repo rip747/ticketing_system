@@ -8,7 +8,8 @@ class TicketTest < ActiveSupport::TestCase
       priority: "medium",
       user: users(:customer_john),
       category: categories(:network),
-      department: departments(:it_support)
+      department: departments(:it_support),
+      organization: organizations(:default)
     )
     ticket.description = "This is a test ticket description"
     assert ticket.valid?
@@ -20,7 +21,8 @@ class TicketTest < ActiveSupport::TestCase
       priority: "medium",
       user: users(:customer_john),
       category: categories(:network),
-      department: departments(:it_support)
+      department: departments(:it_support),
+      organization: organizations(:default)
     )
     assert_not ticket.valid?
     assert_includes ticket.errors[:subject], "can't be blank"
@@ -33,7 +35,8 @@ class TicketTest < ActiveSupport::TestCase
       priority: "medium",
       user: users(:customer_john),
       category: categories(:network),
-      department: departments(:it_support)
+      department: departments(:it_support),
+      organization: organizations(:default)
     )
     assert_not ticket.valid?
     assert_includes ticket.errors[:description], "can't be blank"
@@ -46,7 +49,8 @@ class TicketTest < ActiveSupport::TestCase
       priority: "medium",
       user: users(:customer_john),
       category: categories(:network),
-      department: departments(:it_support)
+      department: departments(:it_support),
+      organization: organizations(:default)
     )
     assert_not ticket.valid?
     assert_includes ticket.errors[:status], "is not included in the list"
@@ -59,7 +63,8 @@ class TicketTest < ActiveSupport::TestCase
       priority: "invalid",
       user: users(:customer_john),
       category: categories(:network),
-      department: departments(:it_support)
+      department: departments(:it_support),
+      organization: organizations(:default)
     )
     assert_not ticket.valid?
     assert_includes ticket.errors[:priority], "is not included in the list"

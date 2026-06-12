@@ -1,4 +1,40 @@
-# one:
-#   record: name_of_fixture (ClassOfFixture)
-#   name: content
-#   body: <p>In a <i>million</i> stars!</p>
+# Tickets have rich text descriptions via ActionText
+vpn_issue_description:
+  record: vpn_issue (Ticket)
+  name: description
+  body: <div>Since this morning, I've been unable to connect to the company VPN. I've tried restarting my computer but the issue persists.</div>
+
+laptop_issue_description:
+  record: laptop_issue (Ticket)
+  name: description
+  body: <div>My laptop screen has started flickering intermittently. It's becoming difficult to work.</div>
+
+payroll_issue_description:
+  record: payroll_issue (Ticket)
+  name: description
+  body: <div>I noticed my June paycheck is missing the overtime hours I worked. Please investigate.</div>
+
+email_issue_description:
+  record: email_issue (Ticket)
+  name: description
+  body: <div>My Outlook client is not allowing me to send emails with attachments larger than 2MB.</div>
+
+license_request_description:
+  record: license_request (Ticket)
+  name: description
+  body: <div>I need a license for Adobe Creative Cloud for the design team. Please process the purchase.</div>
+
+printer_issue_description:
+  record: printer_issue (Ticket)
+  name: description
+  body: <div>The printer on the 3rd floor is showing a paper jam error even though there's no jam.</div>
+
+leave_request_description:
+  record: leave_request (Ticket)
+  name: description
+  body: <div>I would like to request annual leave from July 15-22. Please approve.</div>
+
+refund_request_description:
+  record: refund_request (Ticket)
+  name: description
+  body: <div>Invoice #INV-2024-089 was charged twice to our account. Need a refund for the duplicate.</div>

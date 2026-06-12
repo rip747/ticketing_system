@@ -77,6 +77,8 @@ Before proposing or committing any code changes, evaluate your execution against
 2. Always assume a security first approach. Users should never be able to see each others information unless they are part of the same organization.
 3. This application is a multi-tenant application.
 4. Always make sure that tests pass at the lower levels (models/controllers/jobs/mailers/helpers/views/) before performing system tests (user interface)
+4a. Units Tests should be written for ALL funcitonality.
+4b. Use the gem simplecov in order to make sure that all funtionality is tested.
 5. All CSS should be in a separate file as much as possible. I understand that some CSS might have to be inline, however I don't want CSS in the header of the application.
 6. Any textareas MUST be rich text and allow for images and attachments using ActionText
 7. Use hHotWire when submitting forms so that the page doesn't refresh.

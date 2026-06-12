@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Run tests with accurate code coverage (single worker mode)
+# Usage: bin/test_with_coverage [test files/directories]
+set -e
+
+echo "=== Running tests with coverage (single worker) ==="
+PARALLEL_WORKERS=1 rails test "$@"
+echo ""
+echo "Coverage report: file://$(pwd)/coverage/index.html"

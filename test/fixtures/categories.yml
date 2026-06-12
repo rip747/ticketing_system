@@ -1,0 +1,49 @@
+hardware:
+  name: Hardware Issue
+  description: Hardware related issues
+  department: it_support
+
+software:
+  name: Software Issue
+  description: Software related issues
+  department: it_support
+
+network:
+  name: Network Problem
+  description: Network related issues
+  department: it_support
+
+payroll:
+  name: Payroll Inquiry
+  description: Payroll related inquiries
+  department: hr
+
+leave:
+  name: Leave Request
+  description: Leave and absence requests
+  department: hr
+
+billing:
+  name: Billing Question
+  description: Billing related questions
+  department: finance
+
+invoice:
+  name: Invoice Request
+  description: Invoice related requests
+  department: finance
+
+refund:
+  name: Refund Request
+  description: Refund related requests
+  department: finance
+
+facility:
+  name: Facility Issue
+  description: Facility related issues
+  department: operations
+
+general:
+  name: General Inquiry
+  description: General inquiries
+  department: operations

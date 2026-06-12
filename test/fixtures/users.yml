@@ -1,0 +1,55 @@
+admin:
+  name: System Admin
+  email: admin@helpdesk.com
+  password_digest: <%= BCrypt::Password.create('password123') %>
+  role: admin
+  department: it_support
+
+agent_sarah:
+  name: Sarah Johnson
+  email: sarah@helpdesk.com
+  password_digest: <%= BCrypt::Password.create('password123') %>
+  role: agent
+  department: it_support
+
+agent_mike:
+  name: Mike Chen
+  email: mike@helpdesk.com
+  password_digest: <%= BCrypt::Password.create('password123') %>
+  role: agent
+  department: hr
+
+agent_emma:
+  name: Emma Wilson
+  email: emma@helpdesk.com
+  password_digest: <%= BCrypt::Password.create('password123') %>
+  role: agent
+  department: finance
+
+customer_john:
+  name: John Doe
+  email: john@example.com
+  password_digest: <%= BCrypt::Password.create('password123') %>
+  role: customer
+  department: it_support
+
+customer_jane:
+  name: Jane Smith
+  email: jane@example.com
+  password_digest: <%= BCrypt::Password.create('password123') %>
+  role: customer
+  department: hr
+
+customer_bob:
+  name: Bob Johnson
+  email: bob@example.com
+  password_digest: <%= BCrypt::Password.create('password123') %>
+  role: customer
+  department: operations
+
+customer_alice:
+  name: Alice Brown
+  email: alice@example.com
+  password_digest: <%= BCrypt::Password.create('password123') %>
+  role: customer
+  department: finance

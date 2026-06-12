@@ -1,0 +1,15 @@
+it_support:
+  name: IT Support
+  description: Handles all technical issues
+
+hr:
+  name: Human Resources
+  description: Manages employee relations
+
+finance:
+  name: Finance
+  description: Handles billing and payments
+
+operations:
+  name: Operations
+  description: Manages operational issues

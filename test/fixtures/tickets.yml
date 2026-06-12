@@ -1,0 +1,72 @@
+vpn_issue:
+  subject: Cannot connect to company VPN
+  status: open
+  priority: high
+  user: customer_john
+  assigned_user: agent_sarah
+  category: network
+  department: it_support
+
+laptop_issue:
+  subject: Laptop screen flickering
+  status: open
+  priority: medium
+  user: customer_jane
+  assigned_user: 
+  category: hardware
+  department: it_support
+
+payroll_issue:
+  subject: Payroll discrepancy for June
+  status: pending
+  priority: high
+  user: customer_bob
+  assigned_user: agent_mike
+  category: payroll
+  department: hr
+
+email_issue:
+  subject: Email not sending attachments
+  status: open
+  priority: medium
+  user: customer_alice
+  assigned_user: 
+  category: software
+  department: it_support
+
+license_request:
+  subject: Request for new software license
+  status: resolved
+  priority: low
+  user: customer_john
+  assigned_user: agent_emma
+  category: invoice
+  department: finance
+  closed_at: <%= Time.current %>
+
+printer_issue:
+  subject: Office printer not working
+  status: open
+  priority: medium
+  user: customer_john
+  assigned_user: 
+  category: facility
+  department: operations
+
+leave_request:
+  subject: Annual leave request for July
+  status: pending
+  priority: low
+  user: customer_jane
+  assigned_user: agent_mike
+  category: leave
+  department: hr
+
+refund_request:
+  subject: Refund for duplicate invoice
+  status: open
+  priority: urgent
+  user: customer_bob
+  assigned_user: 
+  category: refund
+  department: finance

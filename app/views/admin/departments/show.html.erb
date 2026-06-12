@@ -1,1 +1,53 @@
-<%= render "admin/departments/edit" %>
+<% content_for :page_title, @department.name %>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="fw-bold mb-0" style="color:#2d3748;">
+    <i class="bi bi-building me-2"></i><%= @department.name %>
+  </h5>
+  <div class="d-flex gap-2">
+    <%= link_to edit_admin_department_path(@department), class: "btn btn-outline-primary btn-sm" do %>
+      <i class="bi bi-pencil me-1"></i> Edit
+    <% end %>
+    <%= link_to admin_departments_path, class: "btn btn-outline-secondary btn-sm" do %>
+      <i class="bi bi-arrow-left me-1"></i> Back
+    <% end %>
+  </div>
+</div>
+
+<div class="card-custom">
+  <div class="card-body">
+    <div class="mb-3">
+      <strong style="color:#718096;font-size:0.85rem;">Description</strong>
+      <p class="mb-0 mt-1"><%= @department.description.presence || "No description provided." %></p>
+    </div>
+    <div class="row g-3 mb-3">
+      <div class="col-md-4">
+        <div class="p-3" style="background:#f7fafc;border-radius:10px;">
+          <strong style="color:#718096;font-size:0.85rem;">Categories</strong>
+          <p class="mb-0 mt-1 fs-5 fw-bold"><%= @department.categories.count %></p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-3" style="background:#f7fafc;border-radius:10px;">
+          <strong style="color:#718096;font-size:0.85rem;">Users</strong>
+          <p class="mb-0 mt-1 fs-5 fw-bold"><%= @department.users.count %></p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-3" style="background:#f7fafc;border-radius:10px;">
+          <strong style="color:#718096;font-size:0.85rem;">Tickets</strong>
+          <p class="mb-0 mt-1 fs-5 fw-bold"><%= @department.tickets.count %></p>
+        </div>
+      </div>
+    </div>
+
+    <% if @department.categories.any? %>
+      <h6 class="fw-bold mb-2" style="color:#2d3748;">Categories</h6>
+      <div class="d-flex flex-wrap gap-2 mb-3">
+        <% @department.categories.each do |cat| %>
+          <span class="badge bg-light text-dark px-3 py-2"><%= cat.name %></span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

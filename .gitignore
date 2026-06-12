@@ -28,6 +28,9 @@
 !/tmp/storage/
 !/tmp/storage/.keep
 
+# Ignore SimpleCov coverage reports.
+/coverage/*
+
 /public/assets
 
 # Ignore key files for decrypting credentials and more.

@@ -25,6 +25,14 @@ class Ticket < ApplicationRecord
     status == "open"
   end
 
+  def pending?
+    status == "pending"
+  end
+
+  def resolved?
+    status == "resolved"
+  end
+
   def closed?
     status == "closed"
   end

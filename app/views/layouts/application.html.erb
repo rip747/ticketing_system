@@ -27,8 +27,9 @@
       <!-- Sidebar -->
       <div class="sidebar" id="sidebar" data-sidebar-target="drawer" data-action="click->sidebar#closeOnBackdrop">
         <div class="sidebar-brand">
-          <i class="bi bi-ticket-perforated-fill"></i>
-          <span>HelpDesk</span>
+          <a href="#" class="sidebar-brand-link" data-action="click->sidebar#toggleCollapse:prevent"><i class="bi bi-ticket-perforated-fill"></i>
+            <span>HelpDesk</span>
+          </a>
           <button class="sidebar-close" data-action="sidebar#close">
             <i class="bi bi-x-lg"></i>
           </button>

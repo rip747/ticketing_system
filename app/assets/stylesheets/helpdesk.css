@@ -52,6 +52,18 @@ body {
   color: var(--accent-color);
 }
 
+.sidebar-brand-link {
+  display: flex;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+  gap: 10px;
+}
+
+.sidebar-brand-link:hover {
+  color: inherit;
+}
+
 .sidebar-nav {
   padding: 16px 0;
   flex: 1;

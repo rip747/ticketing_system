@@ -7,7 +7,7 @@ export default class extends Controller {
     // Restore collapsed state from localStorage
     if (localStorage.getItem("sidebar_collapsed") === "true") {
       this.drawerTarget.classList.add("collapsed")
-      this.Controller.collapseIconTarget.classList.add("bi-chevron-right")
+      this.collapseIconTarget.classList.add("bi-chevron-right")
     }
   }
 
@@ -20,6 +20,9 @@ export default class extends Controller {
   }
 
   toggleCollapse() {
+    // Don't toggle collapse on mobile view (when sidebar is an overlay)
+    if (window.innerWidth < 768) return
+
     this.drawerTarget.classList.toggle("collapsed")
     let collasped = this.drawerTarget.classList.contains("collapsed")
     localStorage.setItem("sidebar_collapsed", collasped)

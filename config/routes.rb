@@ -27,7 +27,7 @@ Rails.application.routes.draw do
       patch :close
       patch :reopen
     end
-    resources :comments, only: [:create, :destroy]
+    resources :comments, only: [ :create, :destroy ]
   end
 
   # Dynamic category loading

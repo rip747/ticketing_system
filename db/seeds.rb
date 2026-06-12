@@ -28,7 +28,7 @@ categories = [
   { name: "Invoice Request", department: dept_finance },
   { name: "Refund Request", department: dept_finance },
   { name: "Facility Issue", department: dept_ops },
-  { name: "General Inquiry", department: dept_ops },
+  { name: "General Inquiry", department: dept_ops }
 ]
 
 categories.each do |cat|
@@ -75,7 +75,7 @@ customers = [
   { name: "Jane Smith", email: "jane@example.com", department: dept_hr },
   { name: "Bob Johnson", email: "bob@example.com", department: dept_ops },
   { name: "Alice Brown", email: "alice@example.com", department: dept_finance },
-  { name: "Charlie Davis", email: "charlie@example.com", department: dept_it },
+  { name: "Charlie Davis", email: "charlie@example.com", department: dept_it }
 ]
 
 customer_records = customers.map do |c|
@@ -97,7 +97,7 @@ tickets_data = [
   { subject: "Request for new software license", description: "I need a license for Adobe Creative Cloud for the design team. Please process the purchase.", user: customer_records[4], department: dept_finance, category: dept_finance.categories.find_by(name: "Invoice Request"), priority: "low", status: "resolved" },
   { subject: "Office printer not working", description: "The printer on the 3rd floor is showing a paper jam error even though there's no jam.", user: customer_records[0], department: dept_ops, category: dept_ops.categories.find_by(name: "Facility Issue"), priority: "medium", status: "open" },
   { subject: "Annual leave request for July", description: "I would like to request annual leave from July 15-22. Please approve.", user: customer_records[1], department: dept_hr, category: dept_hr.categories.find_by(name: "Leave Request"), priority: "low", status: "pending" },
-  { subject: "Refund for duplicate invoice", description: "Invoice #INV-2024-089 was charged twice to our account. Need a refund for the duplicate.", user: customer_records[2], department: dept_finance, category: dept_finance.categories.find_by(name: "Refund Request"), priority: "urgent", status: "open" },
+  { subject: "Refund for duplicate invoice", description: "Invoice #INV-2024-089 was charged twice to our account. Need a refund for the duplicate.", user: customer_records[2], department: dept_finance, category: dept_finance.categories.find_by(name: "Refund Request"), priority: "urgent", status: "open" }
 ]
 
 tickets_data.each do |t|

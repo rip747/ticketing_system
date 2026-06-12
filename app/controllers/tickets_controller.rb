@@ -1,7 +1,7 @@
 class TicketsController < ApplicationController
   before_action :require_login
-  before_action :set_ticket, only: [:show, :edit, :update, :destroy]
-  before_action :require_agent_or_admin, only: [:edit, :update, :destroy, :assign]
+  before_action :set_ticket, only: [ :show, :edit, :update, :destroy ]
+  before_action :require_agent_or_admin, only: [ :edit, :update, :destroy, :assign ]
 
   def index
     @tickets = Ticket.recent

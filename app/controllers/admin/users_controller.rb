@@ -1,6 +1,6 @@
 module Admin
   class UsersController < BaseController
-    before_action :set_user, only: [:show, :edit, :update, :destroy]
+    before_action :set_user, only: [ :show, :edit, :update, :destroy ]
 
     def index
       @users = User.all.includes(:department).order(:name)
@@ -15,7 +15,7 @@ module Admin
     end
 
     def create
-      @user = User.new(user_params)
+      @user = User.new(create_params)
       if @user.save
         flash[:notice] = "User created successfully."
         redirect_to admin_users_path
@@ -34,7 +34,7 @@ module Admin
         params[:user].delete(:password_confirmation)
       end
 
-      if @user.update(user_params)
+      if @user.update(update_params)
         flash[:notice] = "User updated successfully."
         redirect_to admin_users_path
       else
@@ -59,6 +59,17 @@ module Admin
 
     def user_params
       params.require(:user).permit(:name, :email, :password, :password_confirmation, :role, :department_id)
+    end
+
+    def create_params
+      params.require(:user).permit(:name, :email, :password, :password_confirmation, :role, :department_id)
+    end
+
+    def update_params
+      permitted = params.require(:user).permit(:name, :email, :password, :password_confirmation, :department_id)
+      # Admins can also update the role
+      permitted[:role] = params[:user][:role] if params[:user][:role].present?
+      permitted
     end
   end
 end

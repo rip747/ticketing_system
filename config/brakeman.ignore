@@ -1,0 +1,12 @@
+{
+  "ignored_warnings": [
+    {
+      "fingerprint": "19a7a8ac5291eaca242edf2d06365612893e042df6863ca87672e34ef952a14c",
+      "note": "Admin-only controller - require_admin before_action protects role mass assignment"
+    },
+    {
+      "fingerprint": "d3e029fb1b75c579b0d5f7449cd22f9ab737a70606ed56df9b1c31e13435015c",
+      "note": "Admin-only controller - require_admin before_action protects role mass assignment"
+    }
+  ]
+}

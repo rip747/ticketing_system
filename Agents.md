@@ -61,6 +61,8 @@ Before proposing or committing any code changes, evaluate your execution against
 3.  **Hotwire Compliance:** Did I implement the dynamic interaction using a Turbo Frame, Turbo Stream response, or standard Stimulus controller instead of raw legacy JS or manual AJAX?
 4.  **Bootstrap Styling:** Does the markup rely on native Bootstrap components and layout grids, ensuring visual consistency?
 5.  **Minitest Enforcement:** Did I write accompanying Unit, Integration, or System tests using standard Minitest configurations? Do all project tests pass cleanly without errors?
+6.  **Brakeman Security Scan:** Did you run `bin/brakeman --no-pager --ignore-config config/brakeman.ignore` and confirm there are **zero new security warnings**? If any new warnings appeared, they must be resolved before committing. Only pre-existing, intentional warnings (e.g., admin controller mass assignment) should be in the ignore config.
+7.  **RuboCop Linting:** Did you run `bin/rubocop` and confirm there are **zero offenses**? Run `bin/rubocop -a` to auto-correct any fixable issues before manual review.
 
 ## Style
 
@@ -76,9 +78,10 @@ Before proposing or committing any code changes, evaluate your execution against
 1. When validating user input, make sure that the validations happen at the model and controller layer first, then add validations at the UI level. You should always assume that someone will try to hack or by pass the UI through the dev tools in a browser.
 2. Always assume a security first approach. Users should never be able to see each others information unless they are part of the same organization.
 3. This application is a multi-tenant application.
-4. Always make sure that tests pass at the lower levels (models/controllers/jobs/mailers/helpers/views/) before performing system tests (user interface)
-4a. Units Tests should be written for ALL funcitonality.
-4b. Use the gem simplecov in order to make sure that all funtionality is tested.
+4. Test driven development. Test should been written first for the functionality and features. Those tests should fail and code should be written to make those tests pass.
+    a.Always make sure that tests pass at the lower levels (models/controllers/jobs/mailers/helpers/views/) before performing system tests (user interface)
+    b. Units Tests should be written for ALL funcitonality.
+    c. Use the gem simplecov in order to make sure that all funtionality is tested.
 5. All CSS should be in a separate file as much as possible. I understand that some CSS might have to be inline, however I don't want CSS in the header of the application.
 6. Any textareas MUST be rich text and allow for images and attachments using ActionText
 7. Use hHotWire when submitting forms so that the page doesn't refresh.
@@ -86,3 +89,13 @@ Before proposing or committing any code changes, evaluate your execution against
 9. Use Partials as much as possible so you don't repeat yourself. You can especially do that with create and edit forms.
 10. Mobile first. Make sure that functionality will work on a mobile device. 
 11. Try to always use stimulus when you can and DO NOT use inline javascript unless absolutely nescessary.
+
+
+## Goals
+1. To be feature and API compatable with the following ticketing systems so users on those system can migrate away from them:
+    a. ConnectWise PSA
+        1. Platform Information: https://www.connectwise.com/platform/psa
+        2. Features: https://www.connectwise.com/platform/psa#features
+    b. Solarwinds WebHelpDesk
+        1. Production Information: https://www.solarwinds.com/web-help-desk
+        2. Features: https://www.solarwinds.com/web-help-desk/use-cases?page=1
